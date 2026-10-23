@@ -12,5 +12,6 @@ public class UserRegistrationEvent {
     private String firstName;
     private String lastName;
     private String accountNumber;
+    @Builder.Default
     private String bankName = "Fintech Bank";
 }
