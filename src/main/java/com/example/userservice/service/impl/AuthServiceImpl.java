@@ -1,9 +1,6 @@
 package com.example.userservice.service.impl;
 
-import com.example.userservice.dto.ApiResponse;
-import com.example.userservice.dto.AuthResponse;
-import com.example.userservice.dto.RegistrationRequest;
-import com.example.userservice.dto.UserDTO;
+import com.example.userservice.dto.*;
 import com.example.userservice.entity.Account;
 import com.example.userservice.entity.Role;
 import com.example.userservice.entity.User;
@@ -56,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
         Set<Role> roles = new HashSet<>();
 
         String roleName = (registrationRequest.getRole() != null && registrationRequest.getRole().isBlank())
-                ? registrationRequest.getRole().toLowerCase()
+                ? registrationRequest.getRole().toUpperCase()
                 : "CUSTOMER";
 
         Role databaseRole = roleRepository.findByName(roleName)
@@ -122,12 +119,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ApiResponse<AuthResponse> login(RegistrationRequest e) {
-        log.info("Received request to login user with email: {}", e.getEmail());
-        User user = userRepository.findByEmail(e.getEmail())
+    public ApiResponse<AuthResponse> login(LoginRequest loginRequest) {
+        log.info("Received request to login user with email: {}", loginRequest.getEmail());
+        User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        if (!passwordEncoder.matches(e.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new BadRequestException("Invalid password");
         }
 
