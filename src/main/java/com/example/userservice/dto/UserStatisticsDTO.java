@@ -12,7 +12,6 @@ public class UserStatisticsDTO {
     private Long activeUsers;
     private Long inactiveUsers;
     private Long totalAccounts;
-    private Long averageAccountsPerUser;
     private Long customersCount;
     private Long adminsCount;
 

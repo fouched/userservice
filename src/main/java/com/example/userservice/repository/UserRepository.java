@@ -2,6 +2,8 @@ package com.example.userservice.repository;
 
 import com.example.userservice.entity.Role;
 import com.example.userservice.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,5 +21,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     long countByRoleName(@Param("roleName") String roleName);
 
     @Query("SELECT u FROM User u JOIN u.roles r WHERE r = :role")
-    List<User> findByRoleName(@Param("roleName") Role role);
+    List<User> findByRolesContaining(@Param("roleName") Role role);
+
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = :roleName")
+    Page<User> findByRoleName(@Param("roleName") String roleName, Pageable pageable);
 }

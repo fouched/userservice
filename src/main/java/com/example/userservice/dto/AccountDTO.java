@@ -33,7 +33,7 @@ public class AccountDTO {
 
     private AccountStatus accountStatus;
 
-    private UserDTO user;
+    private String ownerEmail;
 
     private LocalDateTime createdAt;
 }

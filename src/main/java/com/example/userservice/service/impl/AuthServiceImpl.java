@@ -24,10 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -78,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
         Account account = Account.builder()
                 .accountNumber(accountNumber)
                 .balance(BigDecimal.ZERO)
-                .currency(Currency.AUD)
+                .currency(Currency.ZAR)
                 .accountType(AccountType.SAVINGS) // this does not seem right?
                 .accountStatus(AccountStatus.ACTIVE)
                 .user(user)
@@ -96,11 +93,9 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         accountEventPublisher.publishUserRegistrationEvent(userRegistrationEvent);
 
-        String token = jwtService.generateToken(user.getEmail());
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
 
         AuthResponse authResponse = AuthResponse.builder()
-                .token(token)
                 .user(userDTO)
                 .build();
 
@@ -132,7 +127,11 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("User account is disabled");
         }
 
-        String token = jwtService.generateToken(user.getEmail());
+        List<String> roles = user.getRoles().stream()
+                .map(Role::getName)
+                .toList();
+
+        String token = jwtService.generateToken(user.getEmail(), roles);
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
 
         AuthResponse authResponse = AuthResponse.builder()
