@@ -7,6 +7,7 @@ import com.example.userservice.exceptions.BadRequestException;
 import com.example.userservice.exceptions.NotFoundException;
 import com.example.userservice.repository.AccountRepository;
 import com.example.userservice.repository.UserRepository;
+import com.example.userservice.security.SecurityUtils;
 import com.example.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse<UserAccountDTO> getUserAccountDetails() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        String email = SecurityUtils.currentUserEmail();
         log.debug("getUserAccountDetails user email: {}", email);
 
         User user = userRepository.findByEmail(email)

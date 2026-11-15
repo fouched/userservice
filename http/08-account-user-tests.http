@@ -1,0 +1,48 @@
+### Get Account Profile
+# @name Get Account Profile
+GET {{host}}/api/accounts/profile
+Authorization: Bearer {{jwt}}
+
+> {%
+    client.test("Status is 200 OK", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.test("Account exists", function () {
+        const body = response.body;
+
+        client.assert(body.message === "Account retrieved", "Expected account to be retrieved")
+        client.assert(body.data.accountNumber !== undefined, "Expected account to have an account number");
+
+    });
+%}
+
+### Get Account By Correct Number
+# @name Get Account By Correct Number
+GET {{host}}/api/accounts/{{accountNumber}}
+Authorization: Bearer {{jwt}}
+
+> {%
+    client.test("Status is 200 OK", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.test("Correct account retrieved", function () {
+        const data = response.body.data;
+        const expectedAccount = String(client.global.get("accountNumber"));
+
+        client.assert(data.accountNumber === expectedAccount, "Expected account " + expectedAccount + ",got " + data.accountNumber);
+
+    });
+%}
+
+### Get Account By Incorrect Number
+# @name Get Account By Incorrect Number
+GET {{host}}/api/accounts/00000
+Authorization: Bearer {{jwt}}
+
+> {%
+    client.test("Status is 404", function () {
+        client.assert(response.status === 404, "Response status is not 404 - not found");
+    });
+%}

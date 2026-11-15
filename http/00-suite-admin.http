@@ -1,5 +1,5 @@
 import 02-login.http
-import 03-profile.http
+import 03-user-profile.http
 import 04-search.http
 import 05-users-by-role.http
 import 06-user-stats.http
