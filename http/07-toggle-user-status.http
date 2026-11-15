@@ -11,7 +11,7 @@ Content-Type: application/json
     client.test("User changed to disabled", function () {
         const body = response.body;
 
-        client.assert(body.message === 'user status changed', "Expected user status to change");
+        client.assert(body.message === 'user status changed to: false', "Expected user status to change true");
     });
 
 %}
@@ -25,7 +25,7 @@ Content-Type: application/json
     client.test("User changed to enabled", function () {
         const body = response.body;
 
-        client.assert(body.message === 'user status changed', "Expected user status to change");
+        client.assert(body.message === 'user status changed to: true', "Expected user status to change to true");
     });
 
 %}

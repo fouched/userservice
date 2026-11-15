@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
 
         return new ApiResponse<>(
                 HttpStatus.OK.value(),
-                "user status changed",
+                "user status changed to: " + user.isEnabled(),
                 null
         );
     }
