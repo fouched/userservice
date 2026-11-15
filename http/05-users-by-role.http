@@ -1,0 +1,48 @@
+### List by valid role
+# @name List by valid role
+GET {{host}}/api/users/admin/all?roleName=Customer
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+//{
+//  "role_name": "CUSTOMER",
+//  "page_size" : 10,
+//  "page": 0
+//}
+
+> {%
+    client.test("Status is 200 OK", function() {
+        client.assert(response.status === 200, "Expected status 200, got " + response.status);
+    });
+
+    client.test("At least 1 user for valid role", function () {
+        const roles = response.body.data.content[0].roles;
+        client.assert(Array.isArray(roles) && roles.length > 0, "Roles array is empty");
+        client.assert(roles.some(r => r.name === "CUSTOMER"), "CUSTOMER role not found");
+    })
+
+%}
+
+### List by invalid role
+# @name List by invalid role
+GET {{host}}/api/users/admin/all?roleName=XXX
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+//{
+//  "role_name": "XXX",
+//  "page_size" : 10,
+//  "page": 0
+//}
+
+> {%
+    client.test("Status is 200", function() {
+        client.assert(response.status === 200, "Expected status 200, got " + response.status);
+    });
+
+    client.test("No content for invalid role", function () {
+        const content = response.body.data.content;
+        client.assert(Array.isArray(content) && content.length === 0, "Roles array is empty");
+    })
+
+%}

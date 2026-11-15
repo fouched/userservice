@@ -1,0 +1,81 @@
+### Search Valid Account
+# @name Search Valid Account
+GET {{host}}/api/users/admin/search?accountNumber={{accountNumber}}
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+#{
+#  "email": "",
+#  "account_number": "{{account_number}}"
+#}
+
+> {%
+    client.test("Status is 200 OK", function() {
+        client.assert(response.status === 200, "Expected status 200, got " + response.status);
+    });
+
+    client.test("User profile details match", function() {
+        const data = response.body.data;
+        const expectedUserId = Number(client.global.get("userId"));
+
+        client.assert(data.user.id === expectedUserId, "Expected user ID " + expectedUserId + ", got " + data.id);
+        client.assert(data.user.email === request.environment.get("email"), "Email mismatch");
+        client.assert(data.user.firstName === request.environment.get("firstName"), "First name mismatch");
+        client.assert(data.user.lastName === request.environment.get("lastName"), "Last name mismatch");
+        client.assert(data.user.enabled === true, "Expected user to be enabled");
+    });
+
+    client.test("User has ADMIN role", function() {
+        const roles = response.body.data.user.roles;
+        client.assert(Array.isArray(roles) && roles.length > 0, "Roles array is empty");
+        client.assert(roles.some(r => r.name === "ADMIN"), "ADMIN role not found");
+    });
+
+    client.test("Account details match", function() {
+        const account = response.body.data.account;
+        const expectedAccount = String(client.global.get("accountNumber"));
+
+        client.assert(account.accountNumber === expectedAccount, "Expected account " + expectedAccount + ", got " + account.accountNumber);
+        client.assert(account.currency === "ZAR", "Expected currency ZAR");
+        client.assert(account.accountType === "SAVINGS", "Expected SAVINGS account type");
+        client.assert(account.accountStatus === "ACTIVE", "Expected ACTIVE account status");
+    });
+%}
+
+### Search Invalid Account
+# @name Search Invalid Account
+GET {{host}}/api/users/admin/search?accountNumber=000000
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+//{
+//  "email": "",
+//  "accountNumber": "00000000000"
+//}
+
+> {%
+    client.test("Status is 404 Not Found", function() {
+        client.assert(response.status === 404, "Expected status 404, got " + response.status);
+    });
+
+    client.test("Error message matches", function() {
+        client.assert(response.body.message === "Account not found", "Expected 'Account not found', got " + response.body.error);
+    });
+%}
+
+### Search Admin Endpoint as Customer (Expect 403)
+# @name Search Unauthorized Role
+POST {{host}}/api/users/admin/search
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+  "email": "",
+  "account_number": "{{account_number}}"
+}
+
+> {%
+    client.test("Non-admin is forbidden (403)", function() {
+        client.assert(response.status === 403, "Expected 403 Forbidden, got " + response.status);
+    });
+%}
