@@ -1,5 +1,5 @@
-### Get User Profile
-# @name Get User Profile
+### Get Customer Profile
+# @name Get Customer Profile
 GET {{host}}/api/users/profile
 Authorization: Bearer {{jwt}}
 

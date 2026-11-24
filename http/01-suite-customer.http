@@ -1,13 +1,13 @@
 import 02-login-customer.http
-import 03-user-profile.http
+import 03-profile-customer.http
 import 04-search.http
-import 08-account-tests-customer.http
+import 08-accounts-customer.http
 
 ### Login as Customer
 run #Login
 
 ### Fetch Customer Profile
-run #Get User Profile
+run #Get Customer Profile
 
 ### Verify Admin Search is Blocked (403)
 run #Search Unauthorized Role

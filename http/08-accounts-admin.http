@@ -1,0 +1,50 @@
+### Get All Accounts
+# @name Get All Accounts
+GET {{host}}/api/accounts/admin/all
+Authorization: Bearer {{jwt}}
+
+> {%
+    client.test("Status is 200 OK", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### Change Account Status to frozen
+# @name Change Account Status to frozen
+PATCH {{host}}/api/accounts/admin/status?accountNumber={{accountNumber}}&accountStatus=FROZEN
+Authorization: Bearer {{jwt}}
+
+> {%
+    client.test("Status is 200 OK", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.test("account is frozen", function () {
+        const data = response.body.data;
+        const expectedAccNum = client.global.get("accountNumber");
+        const accNum = data.accountNumber;
+
+        client.assert(accNum === expectedAccNum, "Expected account number:" + expectedAccNum + ", got:" + accNum);
+        client.assert(data.accountStatus === 'FROZEN', "Expected account to be frozen");
+    });
+%}
+
+### Change Account Status
+# @name Change Account Status to active
+PATCH {{host}}/api/accounts/admin/status?accountNumber={{accountNumber}}&accountStatus=ACTIVE
+Authorization: Bearer {{jwt}}
+
+> {%
+    client.test("Status is 200 OK", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.test("account is active", function () {
+        const data = response.body.data;
+        const expectedAccNum = client.global.get("accountNumber");
+        const accNum = data.accountNumber;
+
+        client.assert(accNum === expectedAccNum, "Expected account number:" + expectedAccNum + ", got:" + accNum);
+        client.assert(data.accountStatus === 'ACTIVE', "Expected account to be active");
+    });
+%}

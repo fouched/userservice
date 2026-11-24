@@ -1,15 +1,16 @@
 import 02-login-admin.http
-import 03-user-profile.http
+import 03-profile-admin.http
 import 04-search.http
 import 05-users-by-role.http
 import 06-user-stats.http
 import 07-toggle-user-status.http
+import 08-accounts-admin.http
 
 ### login
 run #Login
 
 ### profile
-run #Get User Profile
+run #Get Admin Profile
 
 ### search valid
 run #Search Valid Account
@@ -32,4 +33,11 @@ run #Toggle user status to disabled
 ### toggle user to enabled
 run #Toggle user status to enabled
 
+### Get All Accounts
+run #Get All Accounts
 
+### Change Account Status to frozen
+run #Change Account Status to frozen
+
+### Change Account Status to active
+run #Change Account Status to active

@@ -1,0 +1,18 @@
+### Get Admin Profile
+# @name Get Admin Profile
+GET {{host}}/api/users/profile
+Authorization: Bearer {{jwt}}
+
+> {%
+    client.test("Status is 200 OK", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.test("User has an account", function () {
+        const account = response.body.data.account;
+        client.assert(account !== undefined);
+
+        // Save the dynamic account number for later requests
+        client.global.set("accountNumber", account.accountNumber);
+    });
+%}
